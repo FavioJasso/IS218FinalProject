@@ -1,0 +1,90 @@
+.message {
+ 	font-weight: 600;
+	color: blue;
+}
+
+.navbar {
+    background-color: blue;
+    font-size: 1em;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    color: white;
+    padding: 8px 5px 8px 5px;
+}
+
+.navbar a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.navbar-brand {
+    font-size: 1.2em;
+    font-weight: 600;
+}
+
+.navbar-item {
+    font-variant: small-caps;
+    margin-left: 30px;
+}
+
+.body-content {
+    padding: 5px;
+    font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+
+.phone {
+    font-size: 18px;
+}
+
+.phone-link {
+    text-decoration: none;
+    color: #000;
+    font-weight: bold;
+}
+
+.phone-link:hover {
+    color: white;
+    background-color: #007bff;
+    padding: 4px 6px;
+    border-radius: 4px;
+}
+
+.about-box {
+    max-width: 800px;
+    margin: 80px auto;
+    padding: 30px;
+    background: #121212;
+    border-left: 5px solid #00ff88;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+}
+
+.about-box p {
+    font-size: 18px;
+    line-height: 1.7;
+    color: #e0e0e0;
+    text-align: center;
+}
+
+.check-link {
+    display: inline-block;
+    margin-top: 15px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #1e90ff; /* blue */
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.check-link:hover {
+    color: yellow;
+}
+
+input[name=message] {
+	width: 80%;
+}
+
+.message_list th, td {
+    text-align: left;
+    padding-right: 15px;
+}
