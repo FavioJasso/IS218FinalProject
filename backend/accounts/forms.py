@@ -1,5 +1,5 @@
 from django import forms
-from hello.models import LogMessage
+from backend.accounts.models import LogMessage
 
 class LogMessageForm(forms.ModelForm):
     class Meta:

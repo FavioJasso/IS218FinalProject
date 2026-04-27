@@ -2,8 +2,8 @@ from django.shortcuts import render
 from datetime import datetime
 from django.http import HttpResponse
 from django.shortcuts import redirect
-from hello.forms import LogMessageForm
-from hello.models import LogMessage
+from backend.accounts.forms import LogMessageForm
+from backend.accounts.models import LogMessage
 from django.views.generic import ListView
 
 def hello_there(request, name):
@@ -11,7 +11,7 @@ def hello_there(request, name):
 
 
 def home(request):
-    return render(request, "hello/home.html")
+    return render(request, "pages/index.html")
 class HomeListView(ListView):
     """Renders the home page, with a list of all messages."""
     model = LogMessage
@@ -21,10 +21,10 @@ class HomeListView(ListView):
         return context
 
 def about(request):
-    return render(request, "hello/about.html")
+    return render(request, "pages/about.html")
 
 def contact(request):
-    return render(request, "hello/contact.html")
+    return HttpResponse("Contact page placeholder")
 
 def log_message(request):
     form = LogMessageForm(request.POST or None)
@@ -34,6 +34,18 @@ def log_message(request):
             message = form.save(commit=False)
             message.log_date = datetime.now()
             message.save()
-            return redirect("home")
+            return redirect("accounts:home")
     else:
-        return render(request, "hello/log_message.html", {"form": form})
+        return render(request, "accounts/ratings/submit_review.html", {"form": form})
+
+
+def login_view(request):
+    return render(request, "accounts/login.html")
+
+
+def register_view(request):
+    return render(request, "accounts/register.html")
+
+
+def delete_account_view(request):
+    return render(request, "accounts/delete_account.html")
