@@ -12,19 +12,19 @@ def hello_there(request, name):
 
 def home(request):
     return render(request, "pages/index.html")
-class HomeListView(ListView):
-    """Renders the home page, with a list of all messages."""
-    model = LogMessage
+#class HomeListView(ListView):
+   # """Renders the home page, with a list of all messages."""
+    #model = LogMessage
 
-    def get_context_data(self, **kwargs):
-        context = super(HomeListView, self).get_context_data(**kwargs)
-        return context
+    #def get_context_data(self, **kwargs):
+        #context = super(HomeListView, self).get_context_data(**kwargs)
+        #return context
 
-def about(request):
-    return render(request, "pages/about.html")
+def catalog(request):
+    return render(request, "pages/catalog/catalog.html")
 
-def contact(request):
-    return HttpResponse("Contact page placeholder")
+def feedback(request):
+    return HttpResponse(request,"")
 
 def log_message(request):
     form = LogMessageForm(request.POST or None)
@@ -35,8 +35,8 @@ def log_message(request):
             message.log_date = datetime.now()
             message.save()
             return redirect("accounts:home")
-    else:
-        return render(request, "accounts/ratings/submit_review.html", {"form": form})
+
+    return render(request, "accounts/ratings/submit_review.html", {"form": form})
 
 
 def login_view(request):
