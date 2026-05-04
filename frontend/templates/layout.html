@@ -7,11 +7,18 @@
     <title>{% block title %}{% endblock %}</title>
     <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/navbar.css' %}">
+    <style>
+        body {
+        background-image: url("{% static 'images/healthyfoodBG.png' %}");
+        background-size: cover;
+        background-repeat: no-repeat;
+    }
+    </style>
 </head>
 <body>
     <div class="navbar">
 	    <a href="{% url 'pages:index' %}" class="navbar-brand">Home</a>
-	    <a href="{% url 'pages:catalog' %}" class="navbar-item">Catalog</a>
+	    <a href="{% url 'accounts:catalog' %}" class="navbar-item">Catalog</a>
 	    <a href="{% url 'accounts:feedback' %}" class="navbar-item">Feedback</a>
 	</div>
     <div class="body-content">
