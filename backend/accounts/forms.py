@@ -1,8 +1,7 @@
 from django import forms
-from backend.accounts.models import LogMessage
-from backend.accounts.models import Product
+from backend.accounts.models import LogComment
 
-class LogMessageForm(forms.ModelForm):
+class LogCommentForm(forms.ModelForm):
     class Meta:
-        model = LogMessage
+        model = LogComment
         fields = ("message",)   # NOTE: the trailing comma is required

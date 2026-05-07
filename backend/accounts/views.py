@@ -1,11 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect, get_object_or_404
 from datetime import datetime
 from django.http import HttpResponse
-from django.shortcuts import redirect
-from backend.accounts.forms import LogMessageForm
-from backend.accounts.models import LogMessage
+from backend.accounts.forms import LogCommentForm
+from backend.accounts.models import LogComment
 from backend.accounts.models import Product
-from django.views.generic import ListView
+
 
 #class HomeListView(ListView):
    # """Renders the home page, with a list of all messages."""
@@ -24,22 +23,26 @@ def catalog(request):
 
 def item_info(request, pk):
     product = Product.objects.get(pk=pk)
-    return render(request, "pages/catalog/item_info.html", {'product': product} )
+    comments = LogComment.objects.filter(supplement=product).order_by("-log_date")
+    return render(request, "pages/catalog/item_info.html", {'product': product, "comments": comments,})
 
 def feedback(request):
-    return HttpResponse(request,"")
+    return HttpResponse("")
 
-def log_message(request):
-    form = LogMessageForm(request.POST or None)
+def log_comment(request, supplement_id):
+    product = get_object_or_404(Product, pk=supplement_id)
+    form = LogCommentForm(request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        message = form.save(commit=False)
+        if hasattr(message, "product"):
+            message.product = product
+        message.log_date = datetime.now()
+        message.supplement = product
+        message.username = request.user.username
+        message.save()
+        return redirect('item_info', pk=product.pk)
 
-    if request.method == "POST":
-        if form.is_valid():
-            message = form.save(commit=False)
-            message.log_date = datetime.now()
-            message.save()
-            return redirect("accounts:home")
-
-    return render(request, "accounts/ratings/submit_review.html", {"form": form})
+    return render(request, "accounts/ratings/submit_review.html", {"form": form, "product": product})
 
 
 def login_view(request):
