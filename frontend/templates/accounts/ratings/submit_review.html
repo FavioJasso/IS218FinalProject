@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% load static %}
+
+{% block title %}Submit Reviews{% endblock %}
+
+{% block content %}
+<h2>Review for {{ product.product_name }}</h2>
+<form method="post" action="{% url 'accounts:submit_reviews' product.pk %}">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit">Submit Review</button>
+</form>
+{% endblock %}
