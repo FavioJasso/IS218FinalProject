@@ -1,4 +1,4 @@
-{% extends "layout.html" %}
+1{% extends "layout.html" %}
 {% load static %}
 
 {% block title %}{{ product.product_name }} | Item Info{% endblock %}
@@ -7,8 +7,8 @@
 
     <h1>{{ product.product_name }} - Item Info</h1>
     
-    {% if inventory and inventory.image %}
-        <img src="{% static 'images/media/supplement_images/' %}{{ inventory.image }}" 
+    {% if image_url %}
+        <img src="{{ image_url }}" 
              alt="{{ product.product_name }} Image"
              style="max-width: 300px; height: auto;">
     {% endif %}
@@ -30,7 +30,7 @@
         {% if comments %}
             {% for c in comments %}
            
-            <p><strong>{{ c.username }}</strong>: {{c.message}}</p>
+            <p><strong>{{ c.user.username }}</strong>: {{c.message}}</p>
             <small>{{ c.log_date }}</small>
         {% endfor %}
         {% else %}

@@ -12,7 +12,7 @@ class LogComment(models.Model):
     def __str__(self):
         """Returns a string representation of a message."""
         date = timezone.localtime(self.log_date)
-        return f"'{self.username}' comments '{self.message}' on {date.strftime('%A, %d %B, %Y at %X')}"
+        return f"'{self.user.username}' comments '{self.message}' on {date.strftime('%A, %d %B, %Y at %X')}"
 
 class Ingredients(models.Model):
     ingredient_id = models.AutoField(db_column='Ingredient_id', primary_key=True)  # Field name made lowercase.
@@ -34,7 +34,7 @@ class Inventory(models.Model):
     expiration_date = models.DateField(db_column='Expiration_date', blank=True, null=True)  # Field name made lowercase.
     product_name = models.CharField(db_column='Product_name', blank=True, null=True)  # Field name made lowercase.
     cost = models.DecimalField(db_column='Cost', max_digits=10, decimal_places=5, blank=True, null=True)  # Field name made lowercase. max_digits and decimal_places have been guessed, as this database handles decimal fields as float
-    image = models.CharField(db_column='supplement_image', max_length=255, blank=True, null=True)  # Field name made lowercase.
+
     class Meta:
         managed = False
         db_table = 'Inventory'

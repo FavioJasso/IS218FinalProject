@@ -12,7 +12,7 @@ urlpatterns = [
 	path('', views.index, name='index'),
 	path('about/', views.about, name='about'),
 	path('catalog/', views.catalog, name='catalog'),
-	path('catalog/item/', views.item_info, name='item_info'),
+	path('catalog/item/<int:product_id>/', views.item_info, name='item_info'),
 ]
 
 if settings.DEBUG:    
