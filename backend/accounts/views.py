@@ -4,6 +4,7 @@ from django.http import HttpResponse
 from backend.accounts.forms import LogCommentForm
 from backend.accounts.models import LogComment
 from backend.accounts.models import Product
+from backend.accounts.models import Inventory
 
 
 #class HomeListView(ListView):
@@ -23,8 +24,13 @@ def catalog(request):
 
 def item_info(request, pk):
     product = Product.objects.get(pk=pk)
+    inventory = Inventory.objects.filter(supplement=product).first()
     comments = LogComment.objects.filter(supplement=product).order_by("-log_date")
-    return render(request, "pages/catalog/item_info.html", {'product': product, "comments": comments,})
+    return render(request, "pages/catalog/item_info.html", {
+        'product': product, 
+        'inventory': inventory,
+        "comments": comments,
+    })
 
 def feedback(request):
     return HttpResponse("")

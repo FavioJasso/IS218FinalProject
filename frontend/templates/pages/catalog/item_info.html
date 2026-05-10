@@ -1,4 +1,5 @@
 {% extends "layout.html" %}
+{% load static %}
 
 {% block title %}{{ product.product_name }} | Item Info{% endblock %}
 
@@ -6,10 +7,15 @@
 
     <h1>{{ product.product_name }} - Item Info</h1>
     
+    {% if inventory and inventory.image %}
+        <img src="{% static 'images/media/supplement_images/' %}{{ inventory.image }}" 
+             alt="{{ product.product_name }} Image"
+             style="max-width: 300px; height: auto;">
+    {% endif %}
 
     <h2>{{ product.product_name }}</h2>
     <div>
-    <p>Price: ${{ product.price }}</p>
+    <p>Price: ${{ inventory.cost }}</p>
     <p>Manufacturer: {{ product.manufacturer}}</p>
     <p>Expires: {{ product.expiration_date}}</p>
     <p>Product Type: {{ product.product_type}}</p>
@@ -18,6 +24,7 @@
     <p>Supplement ID: {{ product.pk}}</p>
     <p>FDA Regulated? {{ product.is_fda_regulated}}</p>
     <p>Supplier: {{ product.supplier}}</p>
+    <p> </p>
     </div>
     <div>
         {% if comments %}

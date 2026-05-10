@@ -34,7 +34,7 @@ class Inventory(models.Model):
     expiration_date = models.DateField(db_column='Expiration_date', blank=True, null=True)  # Field name made lowercase.
     product_name = models.CharField(db_column='Product_name', blank=True, null=True)  # Field name made lowercase.
     cost = models.DecimalField(db_column='Cost', max_digits=10, decimal_places=5, blank=True, null=True)  # Field name made lowercase. max_digits and decimal_places have been guessed, as this database handles decimal fields as float
-
+    image = models.CharField(db_column='supplement_image', max_length=255, blank=True, null=True)  # Field name made lowercase.
     class Meta:
         managed = False
         db_table = 'Inventory'

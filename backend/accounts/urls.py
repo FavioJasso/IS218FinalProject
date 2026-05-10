@@ -1,5 +1,6 @@
 from django.urls import path
 from backend.accounts import views
+from site_configurations import settings
 
 app_name = 'accounts'
 
@@ -14,5 +15,3 @@ urlpatterns = [
     path('delete/', views.delete_account_view, name='delete_account'),
     path('log/', views.feedback, name='log'),
 ]   
-
-
