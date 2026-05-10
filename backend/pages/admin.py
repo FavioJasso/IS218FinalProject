@@ -1,12 +1,7 @@
-# Imports Django admin tools
+# - Registers the VitaminReview model with Django Admin
+# - Allows admins to view, edit, and delete vitamin reviews
+
 from django.contrib import admin
+from .models import VitaminReview
 
-# Imports Product and Rating models
-from .models import Product, Rating
-
-
-# Registers Product model in admin dashboard
-admin.site.register(Product)
-
-# Registers Rating model in admin dashboard
-admin.site.register(Rating)
+admin.site.register(VitaminReview)
