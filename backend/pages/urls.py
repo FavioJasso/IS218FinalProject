@@ -1,9 +1,7 @@
-# - Defines URL routes for the pages app
-# - The home page displays the vitamin rating system
-
 from django.urls import path
-from .views import home
+from .views import submit_rating, item_info
 
 urlpatterns = [
-    path('', home, name='home'),
+    path('submit-rating/', submit_rating, name='submit_rating'),
+    path('', item_info, name='item_info'),
 ]

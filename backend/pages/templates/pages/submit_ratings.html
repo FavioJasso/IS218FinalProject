@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Submit Vitamin Rating</title>
+</head>
+<body>
+
+<h2>Submit a Vitamin Review</h2>
+
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Submit Review</button>
+</form>
+
+<a href="/">Back to Reviews</a>
+
+</body>
+</html>
