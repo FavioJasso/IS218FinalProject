@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 from django.shortcuts import render, get_object_or_404, redirect
 
 from backend.accounts.models import Product
@@ -21,6 +22,8 @@ def display_image(request, supplement_id):
     item = get_object_or_404(Product, id=supplement_id)
     return render(request, 'pages/catalog/item_info.html', {'item': item})
 =======
+=======
+>>>>>>> 73a9d3768026108b42abfa745faca235a61cc334
 from django.shortcuts import render, redirect
 from .forms import VitaminReviewForm
 from .models import VitaminReview
@@ -46,5 +49,9 @@ def item_info(request):
 
     return render(request, 'pages/item_info.html', {
         'reviews': reviews
+<<<<<<< HEAD
     })
 >>>>>>> e5dd19e1b0815e96019b830e419b32a5d421414b
+=======
+    })
+>>>>>>> 73a9d3768026108b42abfa745faca235a61cc334

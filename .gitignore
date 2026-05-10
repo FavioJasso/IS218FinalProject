@@ -13,4 +13,4 @@ db.sqlite3
 .vscode/
 
 # Mac
-.DS_Store.venv/
+.DS_Store
