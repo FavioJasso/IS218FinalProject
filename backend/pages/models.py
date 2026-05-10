@@ -1,4 +1,3 @@
-# NOTES:
 # - This model represents a single user review of a vitamin product
 # - Each review includes the vitamin name, a star rating, written feedback,
 #   and the date the review was submitted
