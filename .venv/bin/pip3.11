@@ -1,4 +1,4 @@
-#!/Users/shmoney/hello_django/.venv/bin/python
+#!/home/rorsys/IS-218-002-FINAL-PROJECT/IS218FinalProject/.venv/bin/python3.11
 # -*- coding: utf-8 -*-
 import re
 import sys
