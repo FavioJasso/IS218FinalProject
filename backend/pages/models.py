@@ -1,23 +1,37 @@
-# - This model represents a single user review of a vitamin product
-# - Each review includes the vitamin name, a star rating, written feedback,
-#   and the date the review was submitted
-# - One database row = one vitamin product review
+from django.contrib.auth.models import User
 
-from django.db import models
+from backend.accounts import models
 
-class VitaminReview(models.Model):
-    STAR_CHOICES = [
-        (1, '1 Star'),
-        (2, '2 Stars'),
-        (3, '3 Stars'),
-        (4, '4 Stars'),
-        (5, '5 Stars'),
-    ]
-
-    vitamin_name = models.CharField(max_length=150)
-    rating = models.IntegerField(choices=STAR_CHOICES)
-    review_text = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
+class Profile(models.Model):
+    name = models.CharField(max_length=100)
+    image = models.ImageField(upload_to='supplement_images/')
 
     def __str__(self):
-        return f"{self.vitamin_name} - {self.rating} Stars"
+        return self.name
+    
+class MyModel(models.Model):
+    name = models.CharField(max_length=100)
+    image = models.ImageField(upload_to='supplement_images/')
+
+    def __str__(self):
+        return self.name
+
+# Rating system for products (vitamins)
+class Rating(models.Model):
+
+    product = models.ForeignKey(
+        'Product',
+        on_delete=models.CASCADE
+    )
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE
+    )
+
+    score = models.IntegerField()  # 1 to 5 stars
+
+    comment = models.TextField(blank=True)
+
+    def __str__(self):
+        return f"{self.score} stars"

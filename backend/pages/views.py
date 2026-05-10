@@ -1,23 +1,38 @@
-# - Handles displaying the vitamin review form
-# - Saves new vitamin reviews to the database
-# - Retrieves and displays all submitted reviews
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Product
+from .forms import RatingForm
 
-from django.shortcuts import render, redirect
-from .forms import VitaminReviewForm
-from .models import VitaminReview
+def item_info(request, product_id):
 
-def home(request):
+    product = get_object_or_404(Product, id=product_id)
+
     if request.method == 'POST':
-        form = VitaminReviewForm(request.POST)
+
+        form = RatingForm(request.POST)
+
         if form.is_valid():
-            form.save()
-            return redirect('home')
+
+            rating = form.save(commit=False)
+            rating.product = product
+
+            rating.user = request.user
+
+            rating.save()
+
+            return redirect('pages:item_info', product_id=product.id)
+
     else:
-        form = VitaminReviewForm()
+        form = RatingForm()
 
-    reviews = VitaminReview.objects.all().order_by('-created_at')
+    return render(
+        request,
+        'pages/catalog/item_info.html',
+        {
+            'product': product,
+            'form': form
+        }
+    )
 
-    return render(request, 'pages/home.html', {
-        'form': form,
-        'reviews': reviews
-    })
+def display_image(request, supplement_id):
+	item = get_object_or_404(Product, supplement_id=supplement_id)
+	return render(request, 'pages/catalog/item_info.html', {'item': item})
