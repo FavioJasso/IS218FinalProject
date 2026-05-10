@@ -1,15 +1,18 @@
 from django.db import models
 
-class Profile(models.Model):
-    name = models.CharField(max_length=100)
-    image = models.ImageField(upload_to='supplement_images/')
+class VitaminReview(models.Model):
+    STAR_CHOICES = [
+        (1, '1 Star'),
+        (2, '2 Stars'),
+        (3, '3 Stars'),
+        (4, '4 Stars'),
+        (5, '5 Stars'),
+    ]
+
+    vitamin_name = models.CharField(max_length=150)
+    rating = models.IntegerField(choices=STAR_CHOICES)
+    review_text = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.name
-    
-class MyModel(models.Model):
-    name = models.CharField(max_length=100)
-    image = models.ImageField(upload_to='supplement_images/')
-
-    def __str__(self):
-        return self.name
+        return f"{self.vitamin_name} - {self.rating} Stars"

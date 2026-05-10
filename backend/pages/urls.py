@@ -1,14 +1,8 @@
 from django.urls import path
-from backend.pages import views
-from site_configurations import settings
-from django.contrib import admin
-from django.urls import path
-from django.conf import settings
-from django.conf.urls.static import static
-
-app_name = 'pages'
+from .views import submit_rating, item_info
 
 urlpatterns = [
+<<<<<<< HEAD
 	path('', views.index, name='index'),
 	path('about/', views.about, name='about'),
 	path('catalog/', views.catalog, name='catalog'),
@@ -18,3 +12,8 @@ urlpatterns = [
 if settings.DEBUG:    
 	urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)	
 
+=======
+    path('submit-rating/', submit_rating, name='submit_rating'),
+    path('', item_info, name='item_info'),
+]
+>>>>>>> e5dd19e1b0815e96019b830e419b32a5d421414b
