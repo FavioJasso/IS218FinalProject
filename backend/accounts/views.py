@@ -1,19 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.views.generic import ListView
 from django.http import HttpResponse
-<<<<<<< HEAD
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
-from backend.accounts.forms import LogCommentForm
-from backend.accounts.models import LogComment
-=======
-from django.utils import timezone
 from pathlib import Path
+
 from backend.accounts.forms import LogCommentForm
-from backend.accounts.models import LogComment, LogMessage
-from backend.accounts.models import Product
->>>>>>> 3eac805865107092558baddb2a603eba752dfd35
-from backend.accounts.models import Inventory
+from backend.accounts.models import LogComment, Inventory, Product
 from site_configurations import settings
 
 
@@ -47,25 +39,11 @@ def _image_url_for_product(product, image_filenames):
     return f"{settings.MEDIA_URL}supplement_images/{fallback_filename}"
 
 
-# class HomeListView(ListView):
-#    """Renders the home page, with a list of all messages."""
-#    model = LogMessage
-#    def get_context_data(self, **kwargs):
-#        context = super(HomeListView, self).get_context_data(**kwargs)
-#        return context
-
 def home(request):
     return render(request, "pages/index.html")
 
-def catalog(request):
-<<<<<<< HEAD
-    products = Inventory.objects.all()
-    return render(request, "pages/catalog/catalog.html", {'products': products})
 
-def item_info(request, pk):
-    inventory = get_object_or_404(Inventory, pk=pk)
-    comments = LogComment.objects.filter(supplement=inventory).order_by("-log_date")
-=======
+def catalog(request):
     products = Product.objects.all()
     image_filenames = _supplement_image_filenames()
     product_cards = [
@@ -77,51 +55,42 @@ def item_info(request, pk):
     ]
     return render(request, "pages/catalog/catalog.html", {"product_cards": product_cards})
 
+
 def item_info(request, pk):
-    product = Product.objects.get(pk=pk)
+    product = get_object_or_404(Product, pk=pk)
     inventory = Inventory.objects.filter(supplement=product).first()
-    comments = LogComment.objects.filter(supplement=product).order_by("-log_date")
+    comments = LogComment.objects.filter(supplement=inventory).order_by("-log_date") if inventory else []
     image_url = _image_url_for_product(product, _supplement_image_filenames())
->>>>>>> 3eac805865107092558baddb2a603eba752dfd35
     return render(request, "pages/catalog/item_info.html", {
-        'inventory': inventory,
-        'image_url': image_url,
+        "product": product,
+        "inventory": inventory,
+        "image_url": image_url,
         "comments": comments,
     })
+
 
 def feedback(request):
     return HttpResponse("")
 
+
 @login_required
 def log_comment(request, supplement_id):
-<<<<<<< HEAD
-    inventory = get_object_or_404(Inventory, pk=supplement_id)
+    product = get_object_or_404(Product, pk=supplement_id)
+    inventory = Inventory.objects.filter(supplement=product).first()
     form = LogCommentForm(request.POST or None)
-    if request.method == "POST" and form.is_valid():
+    if request.method == "POST" and form.is_valid() and inventory is not None:
         message = form.save(commit=False)
         message.log_date = timezone.now()
         message.supplement = inventory
         message.user_id = request.user.id
         message.save()
-        return redirect('accounts:item_info', pk=inventory.pk)
-=======
-    if not request.user.is_authenticated:
-        return redirect('accounts:login')
-
-    product = get_object_or_404(Product, pk=supplement_id)
-    form = LogCommentForm(request.POST or None)
-    if request.method == "POST" and form.is_valid():
-        message = form.save(commit=False)
-        if hasattr(message, "product"):
-            message.product = product
-        message.log_date = timezone.now()
-        message.supplement = product
-        message.user_id = request.user.id
-        message.save()
         return redirect('accounts:item_info', pk=product.pk)
->>>>>>> 3eac805865107092558baddb2a603eba752dfd35
 
-    return render(request, "accounts/ratings/submit_review.html", {"form": form, "inventory": inventory})
+    return render(request, "accounts/ratings/submit_review.html", {
+        "form": form,
+        "inventory": inventory,
+        "product": product,
+    })
 
 
 def login_view(request):
