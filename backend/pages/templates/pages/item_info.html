@@ -1,26 +1,30 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Vitamin Reviews</title>
-</head>
-<body>
+{% extends "layout.html" %}
 
-<h2>Vitamin Reviews</h2>
+{% block title %}Vitamin Reviews{% endblock %}
 
-<a href="/submit-rating/">Add a Review</a>
+{% block content %}
+<header class="page-header">
+    <h1>Vitamin Reviews</h1>
+    <p class="page-header__lead">Standalone reviews not tied to a specific catalog product.</p>
+</header>
 
-<hr>
+<p class="btn-row">
+    <a href="{% url 'pages:submit_rating' %}" class="btn">Add a vitamin review</a>
+    <a href="{% url 'accounts:catalog' %}" class="btn btn--ghost">Browse catalog instead</a>
+</p>
 
-{% for review in reviews %}
-    <div style="border:1px solid #ccc; padding:10px; margin-bottom:10px;">
-        <strong>{{ review.vitamin_name }}</strong><br>
-        Rating: {{ review.rating }} ⭐<br>
-        <p>{{ review.review_text }}</p>
-        <small>{{ review.created_at }}</small>
-    </div>
-{% empty %}
-    <p>No reviews yet.</p>
-{% endfor %}
-
-</body>
-</html>
+<div class="reviews">
+    {% for review in reviews %}
+        <article class="review">
+            <header class="review__head">
+                <span class="review__author">{{ review.vitamin_name }}</span>
+                <span class="rating">{{ review.rating }}/5</span>
+            </header>
+            <p class="review__body">{{ review.review_text }}</p>
+            <small class="review__meta">{{ review.created_at|date:"M d, Y h:i A" }}</small>
+        </article>
+    {% empty %}
+        <div class="empty-state">No reviews yet.</div>
+    {% endfor %}
+</div>
+{% endblock %}

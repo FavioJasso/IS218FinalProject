@@ -39,6 +39,12 @@ class ProductReview(models.Model):
             return self.user.get_full_name() or self.user.username
         return self.display_name or 'Anonymous'
 
+    @property
+    def stars(self):
+        """Unicode star representation (filled + empty) for templates."""
+        filled = max(0, min(5, int(self.rating or 0)))
+        return '\u2605' * filled + '\u2606' * (5 - filled)
+
 
 class VitaminReview(models.Model):
     STAR_CHOICES = [

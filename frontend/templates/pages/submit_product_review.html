@@ -3,15 +3,19 @@
 {% block title %}Review {{ product.product_name }}{% endblock %}
 
 {% block content %}
-<div class="container" style="max-width: 640px; margin: 1.5rem auto;">
+<header class="page-header">
     <h1>Review {{ product.product_name }}</h1>
-    <p>Share your honest experience &mdash; ratings help other shoppers.</p>
+    <p class="page-header__lead">Share your honest experience &mdash; ratings help other shoppers.</p>
+</header>
 
+<div class="card" style="max-width: 640px;">
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <button type="submit">Submit review</button>
-        <a href="{% url 'accounts:item_info' product.pk %}" style="margin-left: 0.5rem;">Cancel</a>
+        <div class="btn-row">
+            <button type="submit" class="btn">Submit review</button>
+            <a href="{% url 'accounts:item_info' product.pk %}" class="btn btn--ghost">Cancel</a>
+        </div>
     </form>
 </div>
 {% endblock %}

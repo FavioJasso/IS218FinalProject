@@ -3,13 +3,22 @@
 {% block title %}About{% endblock %}
 
 {% block content %}
-<div style="max-width: 720px; margin: 2rem auto;">
+<header class="page-header">
     <h1>About this site</h1>
+    <p class="page-header__lead">Cutting through marketing noise so shoppers can make informed decisions.</p>
+</header>
+
+<div class="card">
     <p>
         This project is a centralized place to browse health &amp; fitness supplements
-        and read real user feedback. Our goal is to cut through marketing noise so
-        shoppers can make informed decisions, and to give product teams a clean
-        feedback loop from their customers.
+        and read real user feedback. Our goal is to surface honest information and to
+        give product teams a clean feedback loop from their customers.
+    </p>
+    <p>
+        Use the <a href="{% url 'accounts:catalog' %}">catalog</a> to browse products,
+        leave a rating on any product page, or visit the
+        <a href="{% url 'accounts:feedback' %}">feedback hub</a> to see what others
+        are saying.
     </p>
 </div>
 {% endblock %}

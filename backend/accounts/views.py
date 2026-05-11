@@ -103,7 +103,45 @@ def item_info(request, pk):
 
 
 def feedback(request):
-    return HttpResponse("")
+    """Public feedback hub: most recent reviews across the whole catalog."""
+    from django.db.models import Avg, Count
+    from backend.pages.models import ProductReview, VitaminReview
+
+    products_by_id = {p.pk: p for p in Product.objects.all()}
+
+    recent_reviews_qs = ProductReview.objects.all().order_by('-created_at')[:20]
+    recent_reviews = [
+        {
+            'review': review,
+            'product': products_by_id.get(review.product_id),
+        }
+        for review in recent_reviews_qs
+    ]
+
+    top_rated = (
+        ProductReview.objects.values('product_id')
+        .annotate(avg=Avg('rating'), count=Count('id'))
+        .order_by('-avg', '-count')[:5]
+    )
+    top_rated_rows = [
+        {
+            'product': products_by_id.get(row['product_id']),
+            'avg': row['avg'],
+            'count': row['count'],
+        }
+        for row in top_rated
+        if products_by_id.get(row['product_id']) is not None
+    ]
+
+    summary = ProductReview.objects.aggregate(avg=Avg('rating'), count=Count('id'))
+
+    return render(request, "pages/feedback.html", {
+        "recent_reviews": recent_reviews,
+        "top_rated_rows": top_rated_rows,
+        "overall_avg": summary['avg'],
+        "overall_count": summary['count'],
+        "vitamin_reviews": VitaminReview.objects.all().order_by('-created_at')[:5],
+    })
 
 
 @login_required

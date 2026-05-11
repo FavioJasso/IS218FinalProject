@@ -1,0 +1,96 @@
+{% extends "layout.html" %}
+
+{% block title %}Feedback{% endblock %}
+
+{% block content %}
+<header class="page-header">
+    <h1>User Feedback</h1>
+    <p class="page-header__lead">
+        See what shoppers are saying about supplements in our catalog.
+        Open any product from the <a href="{% url 'accounts:catalog' %}">catalog</a> to leave your own.
+    </p>
+</header>
+
+<div class="stats">
+    <div class="stat">
+        <span class="stat__label">Total reviews</span>
+        <span class="stat__value">{{ overall_count }}</span>
+    </div>
+    <div class="stat">
+        <span class="stat__label">Average rating</span>
+        <span class="stat__value">
+            {% if overall_avg %}{{ overall_avg|floatformat:2 }} / 5{% else %}&mdash;{% endif %}
+        </span>
+    </div>
+</div>
+
+{% if top_rated_rows %}
+    <section class="section">
+        <h2>Top rated</h2>
+        <div class="reviews">
+            {% for row in top_rated_rows %}
+                <div class="review">
+                    <div class="review__head">
+                        <span class="review__author">
+                            <a href="{% url 'accounts:item_info' row.product.pk %}">{{ row.product.product_name }}</a>
+                        </span>
+                        <span class="rating">
+                            <span class="rating__value">{{ row.avg|floatformat:2 }}</span>
+                            <span class="rating__stars" aria-hidden="true">&#9733;</span>
+                            <span class="rating__count">({{ row.count }} review{{ row.count|pluralize }})</span>
+                        </span>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+{% endif %}
+
+<section class="section">
+    <h2>Most recent reviews</h2>
+    <div class="reviews">
+        {% for entry in recent_reviews %}
+            <article class="review">
+                <header class="review__head">
+                    <span class="review__author">
+                        {% if entry.product %}
+                            <a href="{% url 'accounts:item_info' entry.product.pk %}">{{ entry.product.product_name }}</a>
+                        {% else %}
+                            Product #{{ entry.review.product_id }}
+                        {% endif %}
+                    </span>
+                    <span class="rating" aria-label="{{ entry.review.rating }} out of 5">
+                        <span class="rating__stars">{{ entry.review.stars }}</span>
+                    </span>
+                </header>
+                <p class="review__body"><em>{{ entry.review.author_label }}:</em> {{ entry.review.comment }}</p>
+                <small class="review__meta">{{ entry.review.created_at|date:"M d, Y h:i A" }}</small>
+            </article>
+        {% empty %}
+            <div class="empty-state">No reviews yet. Be the first to leave one from any product page.</div>
+        {% endfor %}
+    </div>
+</section>
+
+{% if vitamin_reviews %}
+    <section class="section">
+        <h2>Standalone vitamin reviews</h2>
+        <div class="reviews">
+            {% for v in vitamin_reviews %}
+                <article class="review">
+                    <header class="review__head">
+                        <span class="review__author">{{ v.vitamin_name }}</span>
+                        <span class="rating"><span class="rating__value">{{ v.rating }}/5</span></span>
+                    </header>
+                    <p class="review__body">{{ v.review_text }}</p>
+                    <small class="review__meta">{{ v.created_at|date:"M d, Y h:i A" }}</small>
+                </article>
+            {% endfor %}
+        </div>
+        <p style="margin-top: 0.85rem;" class="btn-row">
+            <a href="{% url 'pages:vitamin_reviews' %}" class="btn btn--ghost btn--sm">View all vitamin reviews</a>
+            <a href="{% url 'pages:submit_rating' %}" class="btn btn--sm">Add a vitamin review</a>
+        </p>
+    </section>
+{% endif %}
+{% endblock %}

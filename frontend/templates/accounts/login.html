@@ -3,12 +3,14 @@
 {% block title %}Sign in{% endblock %}
 
 {% block content %}
-<div style="max-width: 420px; margin: 2rem auto;">
+<header class="page-header">
     <h1>Sign in</h1>
-    <p>
-        User accounts are managed through the Django admin for now.
-        Staff members can sign in via <a href="/admin/">/admin/</a>.
-    </p>
-    <p>Anonymous reviews are accepted on every product page.</p>
+    <p class="page-header__lead">Account management is handled through Django admin for now.</p>
+</header>
+
+<div class="card">
+    <p>Staff members can sign in via <a href="/admin/">/admin/</a>.</p>
+    <p class="muted">Anonymous reviews are welcome on every product page &mdash; no account required.</p>
+    <a href="/admin/" class="btn">Open admin sign-in</a>
 </div>
 {% endblock %}

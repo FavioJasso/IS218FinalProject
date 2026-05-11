@@ -1,69 +1,89 @@
 {% extends "layout.html" %}
 {% load static %}
 
-{% block title %}{{ product.product_name }} | Item Info{% endblock %}
+{% block title %}{{ product.product_name }}{% endblock %}
 
 {% block content %}
+<nav aria-label="Breadcrumb" class="muted" style="margin-bottom: 0.75rem; font-size: 0.9rem;">
+    <a href="{% url 'accounts:catalog' %}">&larr; Back to catalog</a>
+</nav>
 
-    <h1>{{ product.product_name }}</h1>
-
-    {% if image_url %}
-        <img src="{{ image_url }}"
-             alt="{{ product.product_name }} Image"
-             style="max-width: 300px; height: auto;">
-    {% endif %}
-
-    <section style="margin-top: 1rem;">
-        <p><strong>Description:</strong> {{ description }}</p>
-        <p><strong>Price:</strong> ${{ product.price }}</p>
-        {% if product.manufacturer %}<p><strong>Manufacturer:</strong> {{ product.manufacturer }}</p>{% endif %}
-        {% if product.expiration_date %}<p><strong>Expires:</strong> {{ product.expiration_date }}</p>{% endif %}
-        {% if inventory %}<p><strong>In Stock:</strong> {{ inventory.quantity }}</p>{% endif %}
-        <p><strong>Product ID:</strong> {{ product.pk }}</p>
-    </section>
-
-    <section style="margin-top: 1.5rem;">
-        <h2>User Feedback</h2>
-        {% if review_count %}
-            <p><strong>Average rating:</strong>
-                {{ average_rating|floatformat:1 }} / 5
-                ({{ review_count }} review{{ review_count|pluralize }})
-            </p>
+<section class="product-detail">
+    <div class="product-detail__media">
+        {% if image_url %}
+            <img src="{{ image_url }}" alt="{{ product.product_name }} image">
         {% else %}
-            <p>No ratings yet &mdash; be the first to leave one below.</p>
+            <div class="empty-state">No image</div>
+        {% endif %}
+    </div>
+
+    <div class="product-detail__info">
+        <h1 class="product-detail__title">{{ product.product_name }}</h1>
+
+        {% if review_count %}
+            <div class="rating" aria-label="Average rating {{ average_rating|floatformat:1 }} out of 5">
+                <span class="rating__value">{{ average_rating|floatformat:1 }}</span>
+                <span class="rating__stars" aria-hidden="true">&#9733;</span>
+                <span class="rating__count">({{ review_count }} review{{ review_count|pluralize }})</span>
+            </div>
+        {% else %}
+            <p class="muted">No ratings yet &mdash; be the first to leave one below.</p>
         {% endif %}
 
+        <p style="margin-top: 0.85rem;">{{ description }}</p>
+
+        <ul class="product-detail__meta">
+            <li><strong>Price:</strong> ${{ product.price }}</li>
+            {% if product.manufacturer %}<li><strong>Manufacturer:</strong> {{ product.manufacturer }}</li>{% endif %}
+            {% if product.expiration_date %}<li><strong>Expires:</strong> {{ product.expiration_date }}</li>{% endif %}
+            {% if inventory %}<li><strong>In stock:</strong> {{ inventory.quantity }}</li>{% endif %}
+            <li><strong>Product ID:</strong> {{ product.pk }}</li>
+        </ul>
+    </div>
+</section>
+
+<section class="section">
+    <h2>User feedback</h2>
+    <div class="reviews">
         {% for review in reviews %}
-            <article style="border:1px solid #ccc; padding:10px; margin-bottom:10px;">
-                <strong>{{ review.author_label }}</strong>
-                &middot; <span title="{{ review.rating }}/5">{{ review.rating }} / 5</span>
-                <br>
-                <p style="margin: 0.5rem 0;">{{ review.comment }}</p>
-                <small>{{ review.created_at|date:"M d, Y h:i A" }}</small>
+            <article class="review">
+                <header class="review__head">
+                    <span class="review__author">{{ review.author_label }}</span>
+                    <span class="rating" aria-label="{{ review.rating }} out of 5">
+                        <span class="rating__stars">{{ review.stars }}</span>
+                    </span>
+                </header>
+                <p class="review__body">{{ review.comment }}</p>
+                <small class="review__meta">{{ review.created_at|date:"M d, Y h:i A" }}</small>
             </article>
         {% empty %}
-            <p><em>No reviews yet.</em></p>
+            <div class="empty-state">No reviews yet.</div>
         {% endfor %}
 
-        {% if comments %}
-            <h3 style="margin-top: 1rem;">Comments</h3>
-            {% for c in comments %}
-                <p><strong>{{ c.user.username }}</strong>: {{ c.message }}<br>
-                    <small>{{ c.log_date }}</small></p>
-            {% endfor %}
-        {% endif %}
-    </section>
+        {% for c in comments %}
+            <article class="review">
+                <header class="review__head">
+                    <span class="review__author">{{ c.user.username|default:"Guest" }}</span>
+                    <span class="muted" style="font-size: 0.8rem;">legacy comment</span>
+                </header>
+                <p class="review__body">{{ c.message }}</p>
+                <small class="review__meta">{{ c.log_date|date:"M d, Y h:i A" }}</small>
+            </article>
+        {% endfor %}
+    </div>
+</section>
 
-    <section style="margin-top: 1.5rem;">
-        <h2>Leave a review</h2>
+<section class="section">
+    <div class="card">
+        <h2 style="margin-top:0;">Leave a review</h2>
         <form method="post" action="{% url 'pages:submit_product_review' product.pk %}">
             {% csrf_token %}
             {{ review_form.as_p }}
-            <button type="submit">Submit review</button>
+            <div class="btn-row">
+                <button type="submit" class="btn">Submit review</button>
+                <a href="{% url 'accounts:catalog' %}" class="btn btn--ghost">Cancel</a>
+            </div>
         </form>
-    </section>
-
-    <p style="margin-top: 1.5rem;">
-        <a href="{% url 'accounts:catalog' %}">&larr; Back to Catalog</a>
-    </p>
+    </div>
+</section>
 {% endblock %}
