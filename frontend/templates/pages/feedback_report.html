@@ -1,0 +1,111 @@
+{% extends "layout.html" %}
+
+{% block title %}Feedback Report{% endblock %}
+
+{% block content %}
+<header class="page-header">
+    <h1>User Feedback Report</h1>
+    <p class="page-header__lead">Admin-only view of every rating and comment submitted across the site.</p>
+</header>
+
+<div class="stats">
+    <div class="stat">
+        <span class="stat__label">Total product reviews</span>
+        <span class="stat__value">{{ totals.reviews }}</span>
+    </div>
+    <div class="stat">
+        <span class="stat__label">Legacy comments</span>
+        <span class="stat__value">{{ totals.comments }}</span>
+    </div>
+    <div class="stat">
+        <span class="stat__label">Standalone vitamin reviews</span>
+        <span class="stat__value">{{ totals.vitamin_reviews }}</span>
+    </div>
+    <div class="stat">
+        <span class="stat__label">Overall average</span>
+        <span class="stat__value">
+            {% if totals.overall_avg %}{{ totals.overall_avg|floatformat:2 }}/5{% else %}&mdash;{% endif %}
+        </span>
+    </div>
+</div>
+
+<section class="section">
+    <h2>By product</h2>
+    {% for row in product_rows %}
+        <article class="card" style="margin-bottom: 1rem;">
+            <header class="review__head" style="margin-bottom: 0.5rem;">
+                <h3 style="margin:0;">
+                    {% if row.product %}
+                        <a href="{% url 'accounts:item_info' row.product.pk %}">{{ row.product.product_name }}</a>
+                    {% else %}
+                        Product #{{ row.product_id }} <span class="muted">(deleted)</span>
+                    {% endif %}
+                </h3>
+                <span class="muted" style="font-size: 0.9rem;">
+                    {% if row.review_count %}
+                        Avg {{ row.avg_rating|floatformat:2 }} / 5 from {{ row.review_count }} review{{ row.review_count|pluralize }}
+                    {% else %}
+                        No ratings yet
+                    {% endif %}
+                </span>
+            </header>
+
+            {% if row.reviews %}
+                <h4 style="margin: 0.5rem 0;">Ratings &amp; reviews</h4>
+                <div class="reviews">
+                    {% for r in row.reviews %}
+                        <div class="review">
+                            <div class="review__head">
+                                <span class="review__author">{{ r.author_label }}</span>
+                                <span class="rating"><span class="rating__stars">{{ r.stars }}</span></span>
+                            </div>
+                            <p class="review__body">{{ r.comment }}</p>
+                            <small class="review__meta">{{ r.created_at|date:"M d, Y h:i A" }}</small>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {% if row.comments %}
+                <h4 style="margin: 0.85rem 0 0.5rem;">Legacy comments</h4>
+                <div class="reviews">
+                    {% for c in row.comments %}
+                        <div class="review">
+                            <div class="review__head">
+                                <span class="review__author">{{ c.user.username|default:"unknown" }}</span>
+                                <small class="review__meta">{{ c.log_date|date:"M d, Y h:i A" }}</small>
+                            </div>
+                            <p class="review__body">{{ c.message }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            {% if not row.reviews and not row.comments %}
+                <div class="empty-state">No feedback yet.</div>
+            {% endif %}
+        </article>
+    {% empty %}
+        <div class="empty-state">No products in catalog.</div>
+    {% endfor %}
+</section>
+
+{% if standalone_vitamin_reviews %}
+    <section class="section">
+        <h2>Standalone vitamin reviews</h2>
+        <p class="muted">Not tied to a catalog product.</p>
+        <div class="reviews">
+            {% for v in standalone_vitamin_reviews %}
+                <div class="review">
+                    <div class="review__head">
+                        <span class="review__author">{{ v.vitamin_name }}</span>
+                        <span class="rating"><span class="rating__value">{{ v.rating }}/5</span></span>
+                    </div>
+                    <p class="review__body">{{ v.review_text }}</p>
+                    <small class="review__meta">{{ v.created_at|date:"M d, Y h:i A" }}</small>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+{% endif %}
+{% endblock %}

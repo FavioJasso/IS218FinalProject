@@ -1,19 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
-from django.views.generic import ListView
 from django.http import HttpResponse
-<<<<<<< HEAD
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
-from backend.accounts.forms import LogCommentForm
-from backend.accounts.models import LogComment
-=======
-from django.utils import timezone
 from pathlib import Path
+
 from backend.accounts.forms import LogCommentForm
-from backend.accounts.models import LogComment, LogMessage
-from backend.accounts.models import Product
->>>>>>> 3eac805865107092558baddb2a603eba752dfd35
-from backend.accounts.models import Inventory
+from backend.accounts.models import LogComment, Inventory, Product
 from site_configurations import settings
 
 
@@ -47,25 +39,11 @@ def _image_url_for_product(product, image_filenames):
     return f"{settings.MEDIA_URL}supplement_images/{fallback_filename}"
 
 
-# class HomeListView(ListView):
-#    """Renders the home page, with a list of all messages."""
-#    model = LogMessage
-#    def get_context_data(self, **kwargs):
-#        context = super(HomeListView, self).get_context_data(**kwargs)
-#        return context
-
 def home(request):
     return render(request, "pages/index.html")
 
-def catalog(request):
-<<<<<<< HEAD
-    products = Inventory.objects.all()
-    return render(request, "pages/catalog/catalog.html", {'products': products})
 
-def item_info(request, pk):
-    inventory = get_object_or_404(Inventory, pk=pk)
-    comments = LogComment.objects.filter(supplement=inventory).order_by("-log_date")
-=======
+def catalog(request):
     products = Product.objects.all()
     image_filenames = _supplement_image_filenames()
     product_cards = [
@@ -77,51 +55,113 @@ def item_info(request, pk):
     ]
     return render(request, "pages/catalog/catalog.html", {"product_cards": product_cards})
 
+
+def _build_product_description(product):
+    """Compose a human-readable description from the available Product fields."""
+    parts = []
+    if product.product_type:
+        parts.append(product.product_type)
+    if product.dosage_amount:
+        parts.append(f"Dosage: {product.dosage_amount}")
+    if product.formula_type:
+        parts.append(f"Formula: {product.formula_type}")
+    if product.manufacturer:
+        parts.append(f"By {product.manufacturer}")
+    if not parts:
+        return f"{product.product_name} is a quality supplement in our catalog."
+    return " \u2022 ".join(parts)
+
+
 def item_info(request, pk):
-    product = Product.objects.get(pk=pk)
+    from django.db.models import Avg
+    from backend.pages.forms import ProductReviewForm
+    from backend.pages.models import ProductReview
+
+    product = get_object_or_404(Product, pk=pk)
     inventory = Inventory.objects.filter(supplement=product).first()
-    comments = LogComment.objects.filter(supplement=product).order_by("-log_date")
+    comments = (
+        LogComment.objects.filter(supplement=inventory).order_by("-log_date")
+        if inventory
+        else []
+    )
     image_url = _image_url_for_product(product, _supplement_image_filenames())
->>>>>>> 3eac805865107092558baddb2a603eba752dfd35
+
+    reviews_qs = ProductReview.objects.filter(product_id=product.pk).order_by('-created_at')
+    rating_summary = reviews_qs.aggregate(avg=Avg('rating'))
+
     return render(request, "pages/catalog/item_info.html", {
-        'inventory': inventory,
-        'image_url': image_url,
+        "product": product,
+        "inventory": inventory,
+        "image_url": image_url,
+        "description": _build_product_description(product),
         "comments": comments,
+        "reviews": reviews_qs,
+        "review_count": reviews_qs.count(),
+        "average_rating": rating_summary['avg'],
+        "review_form": ProductReviewForm(),
     })
 
+
 def feedback(request):
-    return HttpResponse("")
+    """Public feedback hub: most recent reviews across the whole catalog."""
+    from django.db.models import Avg, Count
+    from backend.pages.models import ProductReview, VitaminReview
+
+    products_by_id = {p.pk: p for p in Product.objects.all()}
+
+    recent_reviews_qs = ProductReview.objects.all().order_by('-created_at')[:20]
+    recent_reviews = [
+        {
+            'review': review,
+            'product': products_by_id.get(review.product_id),
+        }
+        for review in recent_reviews_qs
+    ]
+
+    top_rated = (
+        ProductReview.objects.values('product_id')
+        .annotate(avg=Avg('rating'), count=Count('id'))
+        .order_by('-avg', '-count')[:5]
+    )
+    top_rated_rows = [
+        {
+            'product': products_by_id.get(row['product_id']),
+            'avg': row['avg'],
+            'count': row['count'],
+        }
+        for row in top_rated
+        if products_by_id.get(row['product_id']) is not None
+    ]
+
+    summary = ProductReview.objects.aggregate(avg=Avg('rating'), count=Count('id'))
+
+    return render(request, "pages/feedback.html", {
+        "recent_reviews": recent_reviews,
+        "top_rated_rows": top_rated_rows,
+        "overall_avg": summary['avg'],
+        "overall_count": summary['count'],
+        "vitamin_reviews": VitaminReview.objects.all().order_by('-created_at')[:5],
+    })
+
 
 @login_required
 def log_comment(request, supplement_id):
-<<<<<<< HEAD
-    inventory = get_object_or_404(Inventory, pk=supplement_id)
+    product = get_object_or_404(Product, pk=supplement_id)
+    inventory = Inventory.objects.filter(supplement=product).first()
     form = LogCommentForm(request.POST or None)
-    if request.method == "POST" and form.is_valid():
+    if request.method == "POST" and form.is_valid() and inventory is not None:
         message = form.save(commit=False)
         message.log_date = timezone.now()
         message.supplement = inventory
         message.user_id = request.user.id
         message.save()
-        return redirect('accounts:item_info', pk=inventory.pk)
-=======
-    if not request.user.is_authenticated:
-        return redirect('accounts:login')
-
-    product = get_object_or_404(Product, pk=supplement_id)
-    form = LogCommentForm(request.POST or None)
-    if request.method == "POST" and form.is_valid():
-        message = form.save(commit=False)
-        if hasattr(message, "product"):
-            message.product = product
-        message.log_date = timezone.now()
-        message.supplement = product
-        message.user_id = request.user.id
-        message.save()
         return redirect('accounts:item_info', pk=product.pk)
->>>>>>> 3eac805865107092558baddb2a603eba752dfd35
 
-    return render(request, "accounts/ratings/submit_review.html", {"form": form, "inventory": inventory})
+    return render(request, "accounts/ratings/submit_review.html", {
+        "form": form,
+        "inventory": inventory,
+        "product": product,
+    })
 
 
 def login_view(request):

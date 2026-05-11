@@ -1,11 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    
-</body>
-</html>
+{% extends "layout.html" %}
+
+{% block title %}Sign in{% endblock %}
+
+{% block content %}
+<header class="page-header">
+    <h1>Sign in</h1>
+    <p class="page-header__lead">Account management is handled through Django admin for now.</p>
+</header>
+
+<div class="card">
+    <p>Staff members can sign in via <a href="/admin/">/admin/</a>.</p>
+    <p class="muted">Anonymous reviews are welcome on every product page &mdash; no account required.</p>
+    <a href="/admin/" class="btn">Open admin sign-in</a>
+</div>
+{% endblock %}

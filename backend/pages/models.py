@@ -1,7 +1,50 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-<<<<<<< HEAD
+
+class ProductReview(models.Model):
+    """A user-submitted rating + comment for a specific product.
+
+    `product_id` is a plain integer because `accounts.Product` is `managed=False`
+    with a non-default primary key column (`Supplement_ID`), which makes a
+    standard ForeignKey awkward. Lookups happen via `Product.objects.get(pk=...)`.
+    """
+
+    STAR_CHOICES = [
+        (1, '1 Star'),
+        (2, '2 Stars'),
+        (3, '3 Stars'),
+        (4, '4 Stars'),
+        (5, '5 Stars'),
+    ]
+
+    product_id = models.IntegerField(db_index=True)
+    user = models.ForeignKey(
+        User, on_delete=models.SET_NULL, null=True, blank=True, related_name='product_reviews'
+    )
+    display_name = models.CharField(max_length=80, blank=True)
+    rating = models.IntegerField(choices=STAR_CHOICES)
+    comment = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"Product #{self.product_id} - {self.rating} stars by {self.author_label}"
+
+    @property
+    def author_label(self):
+        if self.user_id and self.user is not None:
+            return self.user.get_full_name() or self.user.username
+        return self.display_name or 'Anonymous'
+
+    @property
+    def stars(self):
+        """Unicode star representation (filled + empty) for templates."""
+        filled = max(0, min(5, int(self.rating or 0)))
+        return '\u2605' * filled + '\u2606' * (5 - filled)
+
 
 class VitaminReview(models.Model):
     STAR_CHOICES = [
@@ -16,14 +59,10 @@ class VitaminReview(models.Model):
     rating = models.IntegerField(choices=STAR_CHOICES)
     review_text = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-=======
-class Profile(models.Model):
-    name = models.CharField(max_length=100)
-    image = models.ImageField(upload_to='supplement_images/')
->>>>>>> fce359af4304a400d0f44168c226512b42bd82ee
 
     def __str__(self):
         return f"{self.vitamin_name} - {self.rating} Stars"
+
 
 class AdminFeedback(models.Model):
     FEEDBACK_TYPES = [
@@ -45,28 +84,4 @@ class AdminFeedback(models.Model):
         verbose_name_plural = "Admin Feedback"
 
     def __str__(self):
-<<<<<<< HEAD
         return f"{self.title} ({self.get_feedback_type_display()}) - {self.admin_user.get_full_name() if self.admin_user else 'Anonymous'}"
-=======
-        return self.name
-
-# Rating system for products (vitamins)
-class Rating(models.Model):
-
-    product = models.ForeignKey(
-        'Product',
-        on_delete=models.CASCADE
-    )
-
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE
-    )
-
-    score = models.IntegerField()  # 1 to 5 stars
-
-    comment = models.TextField(blank=True)
-
-    def __str__(self):
-        return f"{self.score} stars"
->>>>>>> fce359af4304a400d0f44168c226512b42bd82ee

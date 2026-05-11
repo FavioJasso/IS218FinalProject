@@ -3,23 +3,29 @@
 {% block title %}Catalog{% endblock %}
 
 {% block content %}
-<p>Catalog page placeholder.</p>
+<header class="page-header">
+    <h1>Supplement Catalog</h1>
+    <p class="page-header__lead">Click any product to view full details and read user feedback.</p>
+</header>
+
 <ul class="product-list">
-        {% for card in product_cards %}
-            <li class="product-item">
-<<<<<<< HEAD
-                <h2>{{ product.product_name }}</h2>
-                <p>Price: ${{ product.cost }}</p>
-                <a href="{% url 'accounts:item_info' product.pk %}">See Details</a>
-=======
+    {% for card in product_cards %}
+        <li class="product-item">
+            <div class="product-item__media">
                 {% if card.image_url %}
-                <img src="{{ card.image_url }}" alt="{{ card.product.product_name }}" style="max-width: 180px; height: auto;">
+                    <img src="{{ card.image_url }}" alt="{{ card.product.product_name }}">
                 {% endif %}
-                <h2>{{ card.product.product_name }}</h2>
-                <p>Price: ${{ card.product.price }}</p>
-                <a href="{% url 'accounts:item_info' card.product.pk %}">See Details</a>
->>>>>>> 3eac805865107092558baddb2a603eba752dfd35
-            </li>
-        {% endfor %}
-    </ul>
+            </div>
+            <div class="product-item__body">
+                <h2 class="product-item__title">{{ card.product.product_name }}</h2>
+                <p class="product-item__price">${{ card.product.price }}</p>
+                <div class="product-item__cta">
+                    <a href="{% url 'accounts:item_info' card.product.pk %}" class="btn btn--ghost btn--sm">See details</a>
+                </div>
+            </div>
+        </li>
+    {% empty %}
+        <li class="empty-state">No products yet.</li>
+    {% endfor %}
+</ul>
 {% endblock %}

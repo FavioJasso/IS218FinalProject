@@ -1,28 +1,37 @@
-{% load static %}
-<!DOCTYPE html>
+{% load static %}<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}{% endblock %}</title>
+    <title>{% block title %}{% endblock %} &middot; Supplements</title>
     <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'css/navbar.css' %}">
-    <style>
-        body {
-        background-image: url("{% static 'images/healthyfoodBG.png' %}");
-        background-size: cover;
-        background-repeat: no-repeat;
-    }
-    </style>
 </head>
 <body>
-    <div class="navbar">
-        <a href="{% url 'pages:home' %}" class="navbar-brand">Home</a>
-	    <a href="{% url 'accounts:catalog' %}" class="navbar-item">Catalog</a>
-	    <a href="{% url 'accounts:feedback' %}" class="navbar-item">Feedback</a>
-	</div>
-    <div class="body-content">
-	    {% block content %}{% endblock %}
-    </div>
+    <header class="site-header">
+        <nav class="navbar" aria-label="Primary">
+            <a href="{% url 'pages:home' %}" class="navbar-brand">Supplements</a>
+            <div class="navbar-items">
+                <a href="{% url 'accounts:catalog' %}" class="navbar-item">Catalog</a>
+                <a href="{% url 'accounts:feedback' %}" class="navbar-item">Feedback</a>
+                {% if request.user.is_staff %}
+                    <a href="{% url 'pages:feedback_report' %}" class="navbar-item navbar-item--admin">Report</a>
+                    <a href="/admin/" class="navbar-item navbar-item--admin">Admin</a>
+                {% endif %}
+            </div>
+        </nav>
+    </header>
+
+    <main class="body-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            &copy; {% now "Y" %} Health &amp; Fitness Supplements &middot;
+            <a href="{% url 'accounts:catalog' %}">Catalog</a> &middot;
+            <a href="{% url 'accounts:feedback' %}">Feedback</a>
+        </div>
+    </footer>
 </body>
 </html>

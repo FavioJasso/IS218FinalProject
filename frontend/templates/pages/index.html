@@ -4,8 +4,30 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
+<section class="hero">
+    <h1>Health &amp; Fitness Supplements</h1>
+    <p>
+        Browse a curated catalog of vitamins, protein powders, and pre-workouts.
+        Read honest user feedback before you buy &mdash; and share your own experience
+        to help the next person make a smarter choice.
+    </p>
+    <a href="{% url 'accounts:catalog' %}" class="btn">Browse the catalog</a>
+</section>
 
- <div>
-<p>Test Home page, this will probably be an explanation/about page eventually. Maybe a login page?</p>
- </div>
+<section class="section">
+    <div class="row">
+        <div class="card" style="flex:1 1 280px;">
+            <h3>Curated catalog</h3>
+            <p class="muted">Eight handpicked supplements with clean, scannable detail pages.</p>
+        </div>
+        <div class="card" style="flex:1 1 280px;">
+            <h3>Real user reviews</h3>
+            <p class="muted">Star ratings plus written feedback under every product.</p>
+        </div>
+        <div class="card" style="flex:1 1 280px;">
+            <h3>Admin insights</h3>
+            <p class="muted">Aggregated reports help admins spot trends in customer sentiment.</p>
+        </div>
+    </div>
+</section>
 {% endblock %}
