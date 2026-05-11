@@ -5,7 +5,7 @@
 
 {% block content %}
 
-    <h1>{{ product.product_name }} - Item Info</h1>
+    <h1>{{ product.product_name }}</h1>
 
     {% if image_url %}
         <img src="{{ image_url }}"
@@ -13,30 +13,57 @@
              style="max-width: 300px; height: auto;">
     {% endif %}
 
-    <h2>{{ product.product_name }}</h2>
-    <div>
-        <p>Price: ${{ product.price }}</p>
-        <p>Manufacturer: {{ product.manufacturer }}</p>
-        <p>Expires: {{ product.expiration_date }}</p>
-        {% if inventory %}
-            <p>Quantity: {{ inventory.quantity }}</p>
-        {% endif %}
-        <p>Supplement ID: {{ product.pk }}</p>
-        <p> </p>
-    </div>
-    <div>
-        {% if comments %}
-            {% for c in comments %}
-                <p><strong>{{ c.user.username }}</strong>: {{ c.message }}</p>
-                <small>{{ c.log_date }}</small>
-            {% endfor %}
-        {% else %}
-            <p>No reviews yet.</p>
-        {% endif %}
-    </div>
-    <div>
-        <a href="{% url 'accounts:submit_reviews' product.pk %}">Leave a Comment</a>
-    </div>
+    <section style="margin-top: 1rem;">
+        <p><strong>Description:</strong> {{ description }}</p>
+        <p><strong>Price:</strong> ${{ product.price }}</p>
+        {% if product.manufacturer %}<p><strong>Manufacturer:</strong> {{ product.manufacturer }}</p>{% endif %}
+        {% if product.expiration_date %}<p><strong>Expires:</strong> {{ product.expiration_date }}</p>{% endif %}
+        {% if inventory %}<p><strong>In Stock:</strong> {{ inventory.quantity }}</p>{% endif %}
+        <p><strong>Product ID:</strong> {{ product.pk }}</p>
+    </section>
 
-    <a href="{% url 'accounts:catalog' %}">Back to Catalog</a>
+    <section style="margin-top: 1.5rem;">
+        <h2>User Feedback</h2>
+        {% if review_count %}
+            <p><strong>Average rating:</strong>
+                {{ average_rating|floatformat:1 }} / 5
+                ({{ review_count }} review{{ review_count|pluralize }})
+            </p>
+        {% else %}
+            <p>No ratings yet &mdash; be the first to leave one below.</p>
+        {% endif %}
+
+        {% for review in reviews %}
+            <article style="border:1px solid #ccc; padding:10px; margin-bottom:10px;">
+                <strong>{{ review.author_label }}</strong>
+                &middot; <span title="{{ review.rating }}/5">{{ review.rating }} / 5</span>
+                <br>
+                <p style="margin: 0.5rem 0;">{{ review.comment }}</p>
+                <small>{{ review.created_at|date:"M d, Y h:i A" }}</small>
+            </article>
+        {% empty %}
+            <p><em>No reviews yet.</em></p>
+        {% endfor %}
+
+        {% if comments %}
+            <h3 style="margin-top: 1rem;">Comments</h3>
+            {% for c in comments %}
+                <p><strong>{{ c.user.username }}</strong>: {{ c.message }}<br>
+                    <small>{{ c.log_date }}</small></p>
+            {% endfor %}
+        {% endif %}
+    </section>
+
+    <section style="margin-top: 1.5rem;">
+        <h2>Leave a review</h2>
+        <form method="post" action="{% url 'pages:submit_product_review' product.pk %}">
+            {% csrf_token %}
+            {{ review_form.as_p }}
+            <button type="submit">Submit review</button>
+        </form>
+    </section>
+
+    <p style="margin-top: 1.5rem;">
+        <a href="{% url 'accounts:catalog' %}">&larr; Back to Catalog</a>
+    </p>
 {% endblock %}

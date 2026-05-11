@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+
+{% block title %}Review {{ product.product_name }}{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 640px; margin: 1.5rem auto;">
+    <h1>Review {{ product.product_name }}</h1>
+    <p>Share your honest experience &mdash; ratings help other shoppers.</p>
+
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Submit review</button>
+        <a href="{% url 'accounts:item_info' product.pk %}" style="margin-left: 0.5rem;">Cancel</a>
+    </form>
+</div>
+{% endblock %}

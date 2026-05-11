@@ -1,11 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    
-</body>
-</html>
+{% extends "layout.html" %}
+
+{% block title %}About{% endblock %}
+
+{% block content %}
+<div style="max-width: 720px; margin: 2rem auto;">
+    <h1>About this site</h1>
+    <p>
+        This project is a centralized place to browse health &amp; fitness supplements
+        and read real user feedback. Our goal is to cut through marketing noise so
+        shoppers can make informed decisions, and to give product teams a clean
+        feedback loop from their customers.
+    </p>
+</div>
+{% endblock %}

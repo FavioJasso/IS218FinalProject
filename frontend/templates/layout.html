@@ -9,20 +9,24 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/navbar.css' %}">
     <style>
         body {
-        background-image: url("{% static 'images/healthyfoodBG.png' %}");
-        background-size: cover;
-        background-repeat: no-repeat;
-    }
+            background-image: url("{% static 'images/healthyfoodBG.png' %}");
+            background-size: cover;
+            background-repeat: no-repeat;
+        }
     </style>
 </head>
 <body>
     <div class="navbar">
         <a href="{% url 'pages:home' %}" class="navbar-brand">Home</a>
-	    <a href="{% url 'accounts:catalog' %}" class="navbar-item">Catalog</a>
-	    <a href="{% url 'accounts:feedback' %}" class="navbar-item">Feedback</a>
-	</div>
+        <a href="{% url 'accounts:catalog' %}" class="navbar-item">Catalog</a>
+        <a href="{% url 'accounts:feedback' %}" class="navbar-item">Feedback</a>
+        {% if request.user.is_staff %}
+            <a href="{% url 'pages:feedback_report' %}" class="navbar-item">Feedback Report</a>
+            <a href="/admin/" class="navbar-item">Admin</a>
+        {% endif %}
+    </div>
     <div class="body-content">
-	    {% block content %}{% endblock %}
+        {% block content %}{% endblock %}
     </div>
 </body>
 </html>

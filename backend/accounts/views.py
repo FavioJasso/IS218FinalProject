@@ -56,16 +56,49 @@ def catalog(request):
     return render(request, "pages/catalog/catalog.html", {"product_cards": product_cards})
 
 
+def _build_product_description(product):
+    """Compose a human-readable description from the available Product fields."""
+    parts = []
+    if product.product_type:
+        parts.append(product.product_type)
+    if product.dosage_amount:
+        parts.append(f"Dosage: {product.dosage_amount}")
+    if product.formula_type:
+        parts.append(f"Formula: {product.formula_type}")
+    if product.manufacturer:
+        parts.append(f"By {product.manufacturer}")
+    if not parts:
+        return f"{product.product_name} is a quality supplement in our catalog."
+    return " \u2022 ".join(parts)
+
+
 def item_info(request, pk):
+    from django.db.models import Avg
+    from backend.pages.forms import ProductReviewForm
+    from backend.pages.models import ProductReview
+
     product = get_object_or_404(Product, pk=pk)
     inventory = Inventory.objects.filter(supplement=product).first()
-    comments = LogComment.objects.filter(supplement=inventory).order_by("-log_date") if inventory else []
+    comments = (
+        LogComment.objects.filter(supplement=inventory).order_by("-log_date")
+        if inventory
+        else []
+    )
     image_url = _image_url_for_product(product, _supplement_image_filenames())
+
+    reviews_qs = ProductReview.objects.filter(product_id=product.pk).order_by('-created_at')
+    rating_summary = reviews_qs.aggregate(avg=Avg('rating'))
+
     return render(request, "pages/catalog/item_info.html", {
         "product": product,
         "inventory": inventory,
         "image_url": image_url,
+        "description": _build_product_description(product),
         "comments": comments,
+        "reviews": reviews_qs,
+        "review_count": reviews_qs.count(),
+        "average_rating": rating_summary['avg'],
+        "review_form": ProductReviewForm(),
     })
 
 

@@ -1,0 +1,94 @@
+{% extends "layout.html" %}
+
+{% block title %}Feedback Report{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 1000px; margin: 1.5rem auto;">
+    <h1>User Feedback Report</h1>
+    <p><em>Admin-only view of every rating and comment submitted across the site.</em></p>
+
+    <section style="display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 1.5rem;">
+        <div style="border:1px solid #ccc; padding: 0.75rem 1rem;">
+            <strong>Total product reviews:</strong> {{ totals.reviews }}
+        </div>
+        <div style="border:1px solid #ccc; padding: 0.75rem 1rem;">
+            <strong>Total legacy comments:</strong> {{ totals.comments }}
+        </div>
+        <div style="border:1px solid #ccc; padding: 0.75rem 1rem;">
+            <strong>Standalone vitamin reviews:</strong> {{ totals.vitamin_reviews }}
+        </div>
+        <div style="border:1px solid #ccc; padding: 0.75rem 1rem;">
+            <strong>Overall avg rating:</strong>
+            {% if totals.overall_avg %}{{ totals.overall_avg|floatformat:2 }} / 5{% else %}&mdash;{% endif %}
+        </div>
+    </section>
+
+    <h2>By product</h2>
+    {% for row in product_rows %}
+        <article style="border:1px solid #ccc; padding: 1rem; margin-bottom: 1rem;">
+            <header style="display: flex; justify-content: space-between; align-items: baseline;">
+                <h3 style="margin: 0;">
+                    {% if row.product %}
+                        <a href="{% url 'accounts:item_info' row.product.pk %}">{{ row.product.product_name }}</a>
+                    {% else %}
+                        Product #{{ row.product_id }} (deleted)
+                    {% endif %}
+                </h3>
+                <small>
+                    {% if row.review_count %}
+                        Avg {{ row.avg_rating|floatformat:2 }} / 5 from {{ row.review_count }} review{{ row.review_count|pluralize }}
+                    {% else %}
+                        No ratings yet
+                    {% endif %}
+                </small>
+            </header>
+
+            {% if row.reviews %}
+                <h4>Ratings & reviews</h4>
+                <ul>
+                    {% for r in row.reviews %}
+                        <li>
+                            <strong>{{ r.author_label }}</strong> &middot;
+                            {{ r.rating }}/5 &middot;
+                            <small>{{ r.created_at|date:"M d, Y h:i A" }}</small>
+                            <div>{{ r.comment }}</div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            {% if row.comments %}
+                <h4>Legacy comments</h4>
+                <ul>
+                    {% for c in row.comments %}
+                        <li>
+                            <strong>{{ c.user.username|default:"unknown" }}</strong> &middot;
+                            <small>{{ c.log_date|date:"M d, Y h:i A" }}</small>
+                            <div>{{ c.message }}</div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+
+            {% if not row.reviews and not row.comments %}
+                <p><em>No feedback yet.</em></p>
+            {% endif %}
+        </article>
+    {% empty %}
+        <p>No products in catalog.</p>
+    {% endfor %}
+
+    {% if standalone_vitamin_reviews %}
+        <h2>Standalone vitamin reviews (not tied to a catalog product)</h2>
+        <ul>
+            {% for v in standalone_vitamin_reviews %}
+                <li>
+                    <strong>{{ v.vitamin_name }}</strong> &middot; {{ v.rating }}/5 &middot;
+                    <small>{{ v.created_at|date:"M d, Y h:i A" }}</small>
+                    <div>{{ v.review_text }}</div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+</div>
+{% endblock %}

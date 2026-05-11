@@ -2,10 +2,12 @@ from django.urls import path
 
 from backend.accounts import views as accounts_views
 from .views import (
+    admin_feedback_list,
+    feedback_report,
+    submit_admin_feedback,
+    submit_product_review,
     submit_rating,
     vitamin_reviews,
-    submit_admin_feedback,
-    admin_feedback_list,
 )
 
 app_name = 'pages'
@@ -22,6 +24,8 @@ urlpatterns = [
     path('log/', accounts_views.feedback, name='log'),
     path('submit-rating/', submit_rating, name='submit_rating'),
     path('reviews/', vitamin_reviews, name='vitamin_reviews'),
+    path('catalog/item/<int:pk>/review/', submit_product_review, name='submit_product_review'),
+    path('admin-report/feedback/', feedback_report, name='feedback_report'),
     path('admin/feedback/submit/', submit_admin_feedback, name='submit_admin_feedback'),
     path('admin/feedback/', admin_feedback_list, name='admin_feedback_list'),
 ]

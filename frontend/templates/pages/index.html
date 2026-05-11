@@ -4,8 +4,15 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-
- <div>
-<p>Test Home page, this will probably be an explanation/about page eventually. Maybe a login page?</p>
- </div>
+<div class="hero" style="max-width: 760px; margin: 2rem auto;">
+    <h1>Health &amp; Fitness Supplements</h1>
+    <p>
+        Browse a curated catalog of vitamins, protein powders, and pre-workouts.
+        Read honest user feedback before you buy &mdash; and share your own experience
+        to help the next person make a smarter choice.
+    </p>
+    <p>
+        <a href="{% url 'accounts:catalog' %}" class="btn">Browse the catalog &rarr;</a>
+    </p>
+</div>
 {% endblock %}

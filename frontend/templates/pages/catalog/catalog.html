@@ -3,17 +3,22 @@
 {% block title %}Catalog{% endblock %}
 
 {% block content %}
-<p>Catalog page placeholder.</p>
-<ul class="product-list">
-    {% for card in product_cards %}
-        <li class="product-item">
-            {% if card.image_url %}
-                <img src="{{ card.image_url }}" alt="{{ card.product.product_name }}" style="max-width: 180px; height: auto;">
-            {% endif %}
-            <h2>{{ card.product.product_name }}</h2>
-            <p>Price: ${{ card.product.price }}</p>
-            <a href="{% url 'accounts:item_info' card.product.pk %}">See Details</a>
-        </li>
-    {% endfor %}
-</ul>
+<div style="max-width: 1100px; margin: 1.5rem auto;">
+    <h1>Supplement Catalog</h1>
+    <p>Click any product to view full details and read user feedback.</p>
+    <ul class="product-list" style="list-style: none; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; padding: 0;">
+        {% for card in product_cards %}
+            <li class="product-item" style="border:1px solid #ccc; padding: 0.75rem; background: rgba(255,255,255,0.85);">
+                {% if card.image_url %}
+                    <img src="{{ card.image_url }}" alt="{{ card.product.product_name }}" style="max-width: 100%; height: auto;">
+                {% endif %}
+                <h2 style="font-size: 1.1rem; margin: 0.5rem 0;">{{ card.product.product_name }}</h2>
+                <p style="margin: 0.25rem 0;">Price: ${{ card.product.price }}</p>
+                <a href="{% url 'accounts:item_info' card.product.pk %}">See Details &rarr;</a>
+            </li>
+        {% empty %}
+            <li>No products yet.</li>
+        {% endfor %}
+    </ul>
+</div>
 {% endblock %}
