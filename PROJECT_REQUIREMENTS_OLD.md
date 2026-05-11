@@ -13,7 +13,7 @@ Product display
 		Price
 User Feedback
 	Rating system (stars or numeric)
-	Comment bx
+	Comment box
 	Display feedback (blog-style under each product
 Admin Functionality
 	Admin login
@@ -59,4 +59,3 @@ Show:
 	Admin functionality
 	Feedback report
 All members must contribute
-
