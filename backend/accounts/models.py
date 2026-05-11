@@ -6,7 +6,7 @@ from django.utils import timezone
 class LogComment(models.Model):
     message = models.CharField(max_length=300)
     log_date = models.DateTimeField("date")
-    supplement = models.ForeignKey('Product', models.DO_NOTHING, db_column='Supplement_id')
+    supplement = models.ForeignKey('Inventory', models.DO_NOTHING, db_column='Supplement_id')
     user = models.ForeignKey('AuthUser', models.DO_NOTHING)
     
     def __str__(self):

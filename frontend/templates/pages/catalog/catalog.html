@@ -8,7 +8,7 @@
         {% for product in products %}
             <li class="product-item">
                 <h2>{{ product.product_name }}</h2>
-                <p>Price: ${{ product.price }}</p>
+                <p>Price: ${{ product.cost }}</p>
                 <a href="{% url 'accounts:item_info' product.pk %}">See Details</a>
             </li>
         {% endfor %}

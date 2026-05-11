@@ -1,36 +1,32 @@
 {% extends "layout.html" %}
 {% load static %}
 
-{% block title %}{{ product.product_name }} | Item Info{% endblock %}
+{% block title %}{{ inventory.product_name }} | Item Info{% endblock %}
 
 {% block content %}
 
-    <h1>{{ product.product_name }} - Item Info</h1>
+    <h1>{{ inventory.product_name }} - Item Info</h1>
     
     {% if inventory and inventory.image %}
         <img src="{% static 'images/media/supplement_images/' %}{{ inventory.image }}" 
-             alt="{{ product.product_name }} Image"
+             alt="{{ inventory.product_name }} Image"
              style="max-width: 300px; height: auto;">
     {% endif %}
 
-    <h2>{{ product.product_name }}</h2>
+    <h2>{{ inventory.product_name }}</h2>
     <div>
     <p>Price: ${{ inventory.cost }}</p>
-    <p>Manufacturer: {{ product.manufacturer}}</p>
-    <p>Expires: {{ product.expiration_date}}</p>
-    <p>Product Type: {{ product.product_type}}</p>
-    <p>Dosage: {{ product.dosage_amount}}</p>
-    <p>Formula Type: {{ product.formula_type}}</p>
-    <p>Supplement ID: {{ product.pk}}</p>
-    <p>FDA Regulated? {{ product.is_fda_regulated}}</p>
-    <p>Supplier: {{ product.supplier}}</p>
+    <p>Expires: {{ inventory.expiration_date}}</p>
+    <p>Quantity: {{ inventory.quantity}}</p>
+    <p>Supplement ID: {{ inventory.pk}}</p>
+    <p>Related Product ID: {{ inventory.supplement_id}}</p>
     <p> </p>
     </div>
     <div>
         {% if comments %}
             {% for c in comments %}
            
-            <p><strong>{{ c.username }}</strong>: {{c.message}}</p>
+            <p><strong>{{ c.user.username }}</strong>: {{c.message}}</p>
             <small>{{ c.log_date }}</small>
         {% endfor %}
         {% else %}
@@ -38,7 +34,7 @@
         {% endif %}
         </div>
     <div>
-        <a href="{% url 'accounts:submit_reviews' product.pk %}">Leave a Comment</a>
+        <a href="{% url 'accounts:submit_reviews' inventory.pk %}">Leave a Comment</a>
     </div>
     
     <a href="{% url 'accounts:catalog' %}">Back to Catalog</a>

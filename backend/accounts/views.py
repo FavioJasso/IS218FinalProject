@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from datetime import datetime
 from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
+from django.utils import timezone
 from backend.accounts.forms import LogCommentForm
 from backend.accounts.models import LogComment
-from backend.accounts.models import Product
 from backend.accounts.models import Inventory
 
 
@@ -19,15 +20,13 @@ def home(request):
     return render(request, "pages/index.html")
 
 def catalog(request):
-    products = Product.objects.all()
+    products = Inventory.objects.all()
     return render(request, "pages/catalog/catalog.html", {'products': products})
 
 def item_info(request, pk):
-    product = Product.objects.get(pk=pk)
-    inventory = Inventory.objects.filter(supplement=product).first()
-    comments = LogComment.objects.filter(supplement=product).order_by("-log_date")
+    inventory = get_object_or_404(Inventory, pk=pk)
+    comments = LogComment.objects.filter(supplement=inventory).order_by("-log_date")
     return render(request, "pages/catalog/item_info.html", {
-        'product': product, 
         'inventory': inventory,
         "comments": comments,
     })
@@ -35,20 +34,19 @@ def item_info(request, pk):
 def feedback(request):
     return HttpResponse("")
 
+@login_required
 def log_comment(request, supplement_id):
-    product = get_object_or_404(Product, pk=supplement_id)
+    inventory = get_object_or_404(Inventory, pk=supplement_id)
     form = LogCommentForm(request.POST or None)
     if request.method == "POST" and form.is_valid():
         message = form.save(commit=False)
-        if hasattr(message, "product"):
-            message.product = product
-        message.log_date = datetime.now()
-        message.supplement = product
-        message.username = request.user.username
+        message.log_date = timezone.now()
+        message.supplement = inventory
+        message.user_id = request.user.id
         message.save()
-        return redirect('item_info', pk=product.pk)
+        return redirect('accounts:item_info', pk=inventory.pk)
 
-    return render(request, "accounts/ratings/submit_review.html", {"form": form, "product": product})
+    return render(request, "accounts/ratings/submit_review.html", {"form": form, "inventory": inventory})
 
 
 def login_view(request):
