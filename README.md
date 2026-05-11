@@ -1,4 +1,5 @@
 # Health & Fitness Supplements — IS218 Group 3 Final Project
+Author of Read Me : Favio Jasso 
 
 A Django web application that showcases health and fitness supplements (vitamins,
 protein powders, pre-workouts) and lets users rate and review them. Administrators
