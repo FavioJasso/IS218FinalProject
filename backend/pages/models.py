@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-<<<<<<< HEAD
 
 class VitaminReview(models.Model):
     STAR_CHOICES = [
@@ -16,11 +15,6 @@ class VitaminReview(models.Model):
     rating = models.IntegerField(choices=STAR_CHOICES)
     review_text = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-=======
-class Profile(models.Model):
-    name = models.CharField(max_length=100)
-    image = models.ImageField(upload_to='supplement_images/')
->>>>>>> fce359af4304a400d0f44168c226512b42bd82ee
 
     def __str__(self):
         return f"{self.vitamin_name} - {self.rating} Stars"
@@ -45,28 +39,4 @@ class AdminFeedback(models.Model):
         verbose_name_plural = "Admin Feedback"
 
     def __str__(self):
-<<<<<<< HEAD
         return f"{self.title} ({self.get_feedback_type_display()}) - {self.admin_user.get_full_name() if self.admin_user else 'Anonymous'}"
-=======
-        return self.name
-
-# Rating system for products (vitamins)
-class Rating(models.Model):
-
-    product = models.ForeignKey(
-        'Product',
-        on_delete=models.CASCADE
-    )
-
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE
-    )
-
-    score = models.IntegerField()  # 1 to 5 stars
-
-    comment = models.TextField(blank=True)
-
-    def __str__(self):
-        return f"{self.score} stars"
->>>>>>> fce359af4304a400d0f44168c226512b42bd82ee

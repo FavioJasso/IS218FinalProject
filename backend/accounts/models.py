@@ -1,7 +1,6 @@
 from django.db import models
 from django.utils import timezone
 
-
 # Create your models here.
 class LogComment(models.Model):
     message = models.CharField(max_length=300)
