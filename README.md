@@ -1,4 +1,5 @@
 # IS218FinalProject
+Author: Favio Valentino Jasso
 This is the Final Project for IS218 offerred at NJIT. 
 
 ## Quick Start (Windows Command Prompt)
