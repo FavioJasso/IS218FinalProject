@@ -47,9 +47,11 @@ pip install -r requirements.txt
 # 4. Apply database migrations
 python manage.py migrate
 
-# 5. Create an admin account
-python manage.py createsuperuser
-#   (enter a username, email, and password when prompted)
+# 5. Create the project's demo admin account (idempotent — safe to re-run)
+python manage.py ensure_admin
+#   This creates user "IS218" with password "ProjectIS218" — see "Admin
+#   credentials" below. To use your own credentials instead, run
+#   `python manage.py createsuperuser`.
 
 # 6. Start the development server
 python manage.py runserver
@@ -67,9 +69,37 @@ python -m venv .venv
 pip install -r requirements.txt
 
 python manage.py migrate
-python manage.py createsuperuser
+python manage.py ensure_admin
 python manage.py runserver
 ```
+
+### Admin credentials
+
+After running `python manage.py ensure_admin` you can sign in to
+<http://127.0.0.1:8000/admin/> with:
+
+| Field | Value |
+|---|---|
+| Username | `IS218` |
+| Password | `ProjectIS218` |
+
+The `ensure_admin` management command lives in
+`backend/accounts/management/commands/ensure_admin.py`. It is idempotent —
+running it again resets the password and the staff/superuser flags, so the
+above credentials always work even if the account was edited or the database
+was rebuilt. To use a different username or password (for example in CI or
+when deploying), pass flags or set environment variables:
+
+```bash
+python manage.py ensure_admin --username myadmin --password 'mypassword'
+# or
+DJANGO_ADMIN_USERNAME=myadmin DJANGO_ADMIN_PASSWORD='mypassword' python manage.py ensure_admin
+```
+
+> **Security note:** these are demo credentials for a class project running on
+> a local development server. Do **not** reuse this password anywhere real and
+> do **not** deploy this project to the public internet without changing it
+> (along with `SECRET_KEY` and `DEBUG` in `site_configurations/settings.py`).
 
 The site will be available at **http://127.0.0.1:8000/**. Stop the server with
 `Ctrl+C`.
@@ -115,8 +145,10 @@ A complete demo of the four required features takes about 5 minutes.
 
 ### 3. Admin functionality (Add / edit / delete products, view feedback)
 
-1. Open <http://127.0.0.1:8000/admin/> and sign in with the superuser you
-   created during setup.
+1. Open <http://127.0.0.1:8000/admin/> and sign in with the demo credentials
+   created by `python manage.py ensure_admin`:
+   - **Username:** `IS218`
+   - **Password:** `ProjectIS218`
 2. After signing in, the navbar will show two new links: **Report** and **Admin**.
 3. From the admin index, you can manage:
    - **Accounts → Products** — add, edit, or delete catalog products.
