@@ -1,7 +1,15 @@
-from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import user_passes_test
-from .forms import VitaminReviewForm, AdminFeedbackForm
-from .models import VitaminReview, AdminFeedback
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
+from django.shortcuts import render, get_object_or_404, redirect
+=======
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Product
+from .forms import RatingForm
+>>>>>>> fce359af4304a400d0f44168c226512b42bd82ee
+
+from backend.accounts.models import Product
 
 def index(request):
     return render(request, 'pages/index.html')
@@ -10,8 +18,38 @@ def about(request):
     return render(request, 'pages/about.html')
 
 def catalog(request):
-    # Keep a single source of truth for product listing/details under accounts routes.
-    return redirect('accounts:catalog')
+    products = Product.objects.all()
+    return render(request, 'pages/catalog/catalog.html', {'products': products})
+
+def item_info(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+<<<<<<< HEAD
+    return render(request, 'pages/catalog/item_info.html', {'product': product})
+
+def display_image(request, supplement_id):
+    item = get_object_or_404(Product, id=supplement_id)
+    return render(request, 'pages/catalog/item_info.html', {'item': item})
+=======
+=======
+>>>>>>> 73a9d3768026108b42abfa745faca235a61cc334
+=======
+>>>>>>> 73a9d3768026108b42abfa745faca235a61cc334
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import user_passes_test
+from .forms import VitaminReviewForm, AdminFeedbackForm
+from .models import VitaminReview, AdminFeedback
+=======
+
+    if request.method == 'POST':
+
+        form = RatingForm(request.POST)
+
+        if form.is_valid():
+
+            rating = form.save(commit=False)
+
+            rating.product = product
+>>>>>>> fce359af4304a400d0f44168c226512b42bd82ee
 
 
 def is_admin_user(user):
@@ -25,10 +63,11 @@ def submit_rating(request):
         form = VitaminReviewForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('pages:item_info')
+            return redirect('item_info')
     else:
         form = VitaminReviewForm()
 
+<<<<<<< HEAD
     return render(request, 'pages/submit_ratings.html', {
         'form': form
     })
@@ -40,6 +79,7 @@ def item_info(request):
 
     return render(request, 'pages/item_info.html', {
         'reviews': reviews
+<<<<<<< HEAD
     })
 
 # Admin-only: Submit feedback
@@ -68,3 +108,25 @@ def admin_feedback_list(request):
     return render(request, 'pages/admin_feedback_list.html', {
         'feedback_list': feedback_list
     })
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+    })
+>>>>>>> e5dd19e1b0815e96019b830e419b32a5d421414b
+=======
+    })
+>>>>>>> 73a9d3768026108b42abfa745faca235a61cc334
+=======
+    })
+>>>>>>> 73a9d3768026108b42abfa745faca235a61cc334
+>>>>>>> 3eac805865107092558baddb2a603eba752dfd35
+=======
+    return render(
+        request,
+        'pages/catalog/item_info.html',
+        {
+            'product': product,
+            'form': form
+        }
+    )
+>>>>>>> fce359af4304a400d0f44168c226512b42bd82ee
