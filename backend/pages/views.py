@@ -1,7 +1,13 @@
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 from django.shortcuts import render, get_object_or_404, redirect
+=======
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Product
+from .forms import RatingForm
+>>>>>>> fce359af4304a400d0f44168c226512b42bd82ee
 
 from backend.accounts.models import Product
 
@@ -17,6 +23,7 @@ def catalog(request):
 
 def item_info(request, product_id):
     product = get_object_or_404(Product, id=product_id)
+<<<<<<< HEAD
     return render(request, 'pages/catalog/item_info.html', {'product': product})
 
 def display_image(request, supplement_id):
@@ -31,6 +38,18 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import user_passes_test
 from .forms import VitaminReviewForm, AdminFeedbackForm
 from .models import VitaminReview, AdminFeedback
+=======
+
+    if request.method == 'POST':
+
+        form = RatingForm(request.POST)
+
+        if form.is_valid():
+
+            rating = form.save(commit=False)
+
+            rating.product = product
+>>>>>>> fce359af4304a400d0f44168c226512b42bd82ee
 
 
 def is_admin_user(user):
@@ -48,6 +67,7 @@ def submit_rating(request):
     else:
         form = VitaminReviewForm()
 
+<<<<<<< HEAD
     return render(request, 'pages/submit_ratings.html', {
         'form': form
     })
@@ -100,3 +120,13 @@ def admin_feedback_list(request):
     })
 >>>>>>> 73a9d3768026108b42abfa745faca235a61cc334
 >>>>>>> 3eac805865107092558baddb2a603eba752dfd35
+=======
+    return render(
+        request,
+        'pages/catalog/item_info.html',
+        {
+            'product': product,
+            'form': form
+        }
+    )
+>>>>>>> fce359af4304a400d0f44168c226512b42bd82ee
